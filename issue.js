@@ -37,7 +37,7 @@ async function addVeracodeIssue(options, issue) {
     .then( async result => {
         console.log(`Issue successfully created, result: ${result.status}`);
         var issue_number = result.data.number
-        if ( issue.pr_link != "" ){
+        if ( issue.pr_link != "undefined" ){
             console.log('Running on a PR, adding PR to the issue.')
             console.log('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
         
@@ -49,9 +49,7 @@ async function addVeracodeIssue(options, issue) {
                 repo: githubRepo,
                 issue_number: issue_number,
                 data: {
-                    //"body": issue.pr_link;
-                    //"body": issue + "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID
-                    "body": issue.body;
+                    "body": issue.pr_link;
                 }
             })
         }
