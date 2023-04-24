@@ -17,7 +17,7 @@ async function addVeracodeIssue(options, issue) {
     console.debug(`Adding Issue for ${issue.title}`);
 
     var authToken = 'token ' + githubToken;
-    var pr_link = "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID;
+    const pr_link = "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID;
     #var pr_link = '"https://github.com/octocat/Hello-World/pull/1347",
 
 
