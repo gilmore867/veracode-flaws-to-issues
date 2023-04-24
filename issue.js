@@ -50,7 +50,8 @@ async function addVeracodeIssue(options, issue) {
                 issue_number: issue_number,
                 data: {
                     //"body": issue.pr_link;
-                    "body": issue + "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID
+                    //"body": issue + "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID
+                    "body": issue.body;
                 }
             })
         }
