@@ -41,7 +41,7 @@ async function addVeracodeIssue(options, issue) {
             console.log('Running on a PR, adding PR to the issue.')
             console.log('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
         
-            await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+            await requestWithAuth('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                 headers: {
                     authorization: authToken
                 },
