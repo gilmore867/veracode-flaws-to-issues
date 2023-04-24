@@ -17,7 +17,7 @@ async function addVeracodeIssue(options, issue) {
     console.debug(`Adding Issue for ${issue.title}`);
 
     var authToken = 'token ' + githubToken;
-    var pr_link = '';
+    var pr_link = `Veracode issue link to PR: https://github.com/`+options.githubOwner+`/`+options.githubRepo+`/pull/`+options.pr_commentID;
 
 
     await request('POST /repos/{owner}/{repo}/issues', {
