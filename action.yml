@@ -12,7 +12,7 @@ inputs:
   wait-time:
     description: 'Delay (in seconds) between entering Issues into GitHub (due to rate limiting)'
     required: false
-    default: '2'
+    default: '10'
   source_base_path_1:
     description: 'Rewrite 1'
     required: false
