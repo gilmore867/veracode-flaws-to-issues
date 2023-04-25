@@ -18,7 +18,7 @@ async function addVeracodeIssue(options, issue) {
 
     var authToken = 'token ' + githubToken;
     const pr_link = "Veracode issue link to PR: https://github.com/'+options.githubOwner+'/'+options.githubRepo+'/pull/'+options.pr_commentID;
-    console.log('pr_link')
+    console.debug('pr_link')
     #var pr_link = '"https://github.com/octocat/Hello-World/pull/1347",
 
 
@@ -41,7 +41,7 @@ async function addVeracodeIssue(options, issue) {
             console.log('Running on a PR, adding PR to the issue.')
             console.log('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
         
-            await requestWithAuth('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+            await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                 headers: {
                     authorization: authToken
                 },
