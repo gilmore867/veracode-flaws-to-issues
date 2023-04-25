@@ -34,28 +34,28 @@ async function addVeracodeIssue(options, issue) {
             "body": issue.body;
         }
     })
-    .then( async result => {
-        console.log(`Issue successfully created, result: ${result.status}`);
-        var issue_number = result.data.number
-        if ( issue.pr_link != "undefined" ){
-            console.log('Running on a PR, adding PR to the issue.')
-            console.debug('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
-        
-            await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
-                headers: {
-                    authorization: authToken
-                },
-                owner: githubOwner,
-                repo: githubRepo,
-                issue_number: issue_number,
-                data: {
-                    //"body": issue.pr_link;
-                    "body": "Here is the body text"
-                }
-            })
-        }
-        return issue_number
-    })
+    //.then( async result => {
+    //    console.log(`Issue successfully created, result: ${result.status}`);
+    //    var issue_number = result.data.number
+    //    if ( issue.pr_link != "undefined" ){
+    //        console.log('Running on a PR, adding PR to the issue.')
+    //        console.debug('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
+    //    
+    //        await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+    //           headers: {
+    //               authorization: authToken
+    //            },
+    //            owner: githubOwner,
+    //            repo: githubRepo,
+    //            issue_number: issue_number,
+    //            data: {
+    //               //"body": issue.pr_link;
+    //                "body": "Here is the body text"
+    //            }
+    //        })
+    //    }
+    //    return issue_number
+    //})
     .catch( error => {
         // 403 possible rate-limit error
         if((error.status == 403) && (error.message.indexOf('abuse detection') > 0) ) {
