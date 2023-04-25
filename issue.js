@@ -27,8 +27,10 @@ async function addVeracodeIssue(options, issue) {
         repo: githubRepo,
         data: {
             "title": issue.title,
+            "body": issue.body,
             "labels": [label.severityToLabel(issue.severity), issue.label],
-            "body": issue.body
+            "assignee": githubOwner,
+            "milestone": "",
         }
     })
     .then( async result => {
@@ -46,7 +48,7 @@ async function addVeracodeIssue(options, issue) {
                 repo: githubRepo,
                 issue_number: issue_number,
                 data: {
-                    "body": issue.pr_link
+                    "body": issue.pr_link,
                 }
             })
         }
