@@ -39,7 +39,7 @@ async function addVeracodeIssue(options, issue) {
         var issue_number = result.data.number
         if ( issue.pr_link != "undefined" ){
             console.log('Running on a PR, adding PR to the issue.')
-            console.log('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
+            console.debug('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
         
             await request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                 headers: {
@@ -49,7 +49,8 @@ async function addVeracodeIssue(options, issue) {
                 repo: githubRepo,
                 issue_number: issue_number,
                 data: {
-                    "body": issue.pr_link;
+                    //"body": issue.pr_link;
+                    "body": "Here is the body text"
                 }
             })
         }
