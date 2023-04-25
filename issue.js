@@ -1,78 +1,68 @@
-const core = require("@actions/core");
-const { request } = require("@octokit/request");
-const github = require("@actions/github")
+//
+// GitHub issue importer
+//
 
-function parse_array(input_name) {
-  const input_value = core.getInput(input_name)
-  if (input_value === "") {
-    return undefined; 
-  }
-  if (input_value === "<<EMPTY>>") {
-    return [];
-  }
-  return input_value.split(",");
+const { request } = require('@octokit/request');
+
+// add the flaw to GitHub as an Issue
+async function addVeracodeIssue(options, issue) {
+
+    const label = require('./label');
+    const ApiError = require('./util').ApiError;
+
+    const githubOwner = options.githubOwner;
+    const githubRepo = options.githubRepo;
+    const githubToken = options.githubToken;
+
+    console.debug(`Adding Issue for ${issue.title}`);
+
+    var authToken = 'token ' + githubToken;
+
+
+    await requestWithAuth('POST /repos/{owner}/{repo}/issues', {
+        headers: {
+            authorization: authToken
+        },
+        owner: githubOwner,
+        repo: githubRepo,
+        data: {
+            "title": issue.title,
+            "labels": [label.severityToLabel(issue.severity), issue.label],
+            "body": issue.body
+        }
+    })
+    .then( async result => {
+        console.log(`Issue successfully created, result: ${result.status}`);
+        var issue_number = result.data.number
+        if ( issue.pr_link != "" ){
+            console.log('Running on a PR, adding PR to the issue.')
+            //console.log('pr_link: '+issue.pr_link+'\nissue_number: '+issue_number)
+        
+            await requestWithAuth('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+                headers: {
+                    authorization: authToken
+                },
+                owner: githubOwner,
+                repo: githubRepo,
+                issue_number: issue_number,
+                data: {
+                    "body": issue.pr_link
+                }
+            })
+        }
+        return issue_number
+    })
+    .catch( error => {
+        // 403 possible rate-limit error
+        if((error.status == 403) && (error.message.indexOf('abuse detection') > 0) ) {
+
+            console.warn(`GitHub rate limiter tripped, ${error.message}`);
+
+            throw new ApiError('Rate Limiter tripped');
+        } else {
+            throw new Error (`Error ${error.status} creating Issue for \"${issue.title}\": ${error.message}`);
+        }           
+    });
 }
 
-function parse_boolean(input_name) {
-  const input_value = core.getInput(input_name)
-  return input_value === "true"
-}
-
-function default_parse(input_name) {
-  const input_value = core.getInput(input_name)
-  if (!input_value) {
-    if (input_name === 'owner') {
-      return github.context.repo.owner
-    } else if (input_name === 'repo') {
-      return github.context.repo.repo
-    }
-  }
-  return input_value || undefined
-}
-
-const token = default_parse("token");
-const owner = default_parse("owner");
-const repo = default_parse("repo");
-const title = default_parse("title");
-const body = default_parse("body");
-const assignee = default_parse("assignee");
-const milestone = default_parse("milestone");
-const labels = parse_array("labels");
-const assignees = parse_array("assignees");
-
-
-const requestWithAuth = request.defaults({
-  headers: {
-    authorization: `Bearer ${token}`
-  },
-  mediaType: {
-    previews: [
-      "symmetra",
-    ]
-  } 
-});
-
-requestWithAuth("post /repos/{owner}/{repo}/issues", {
-    token,
-    owner,
-    repo,
-    title,
-    body,
-    assignee,
-    milestone,
-    labels,
-    assignees,
-})
-  .then(result => {
-    console.log("result", result);
-    if (result && result.data && result.data.id) {
-      core.setOutput('id', result.data.id)
-    }
-    if (result && result.data && result.data.number) {
-      core.setOutput('number', result.data.number)
-    }
-  })
-  .catch(error => {
-    console.log("error", error);
-    core.setFailed(error.message);
-  });
+module.exports = { addVeracodeIssue };
