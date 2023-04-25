@@ -27,7 +27,8 @@ async function addVeracodeIssue(options, issue) {
         repo: githubRepo,
         data: {
             "title": issue.title,
-            "body": issue.body,
+            //"body": issue.body,
+            "body": "This is a test body",
             "labels": [label.severityToLabel(issue.severity), issue.label],
             "assignee": githubOwner,
             "milestone": "",
